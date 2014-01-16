@@ -1,0 +1,19 @@
+{
+  "name": "leprechaun",
+  "version": "0.0.0",
+  "description": "Trading bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hydrarulz/leprechaun.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hydrarulz/leprechaun/issues"
+  },
+  "homepage": "https://github.com/hydrarulz/leprechaun"
+}
