@@ -10,6 +10,12 @@
     "type": "git",
     "url": "https://github.com/hydrarulz/leprechaun.git"
   },
+  "dependencies": {
+    "querystring": ">=0.2.0",
+    "request": ">=2.27.0",
+    "microtime": ">=0.5.0",
+    "kraken-api": ""
+  },
   "author": "",
   "license": "ISC",
   "bugs": {
