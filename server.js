@@ -71,8 +71,8 @@
       } else {
         data_set = data.result['XXBTZEUR'];
         console.log("Data set length " + data_set.length);
-        ma_long_size = 500;
-        ma_short_size = 50;
+        ma_long_size = 1000;
+        ma_short_size = 300;
         ma_long = new MA(ma_long_size);
         for (i = _i = _ref = data_set.length - ma_long_size, _ref1 = data_set.length - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = _ref <= _ref1 ? ++_i : --_i) {
           ma_long.push(i, parseInt(data_set[i][0], 10));
@@ -85,7 +85,7 @@
         }
         ma_short_value = ma_short.movingAverage();
         console.log("Moving average for last " + ma_short_size + " = " + ma_short_value);
-        least_difference = 4;
+        least_difference = 0;
         if ((ma_short_value + least_difference < ma_long_value) && invested) {
           console.log("Going down let's sell");
           sell();

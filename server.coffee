@@ -80,8 +80,8 @@ check_moving_average = ()->
                 console.log "Data set length #{data_set.length}"
 
                 # Moving average
-                ma_long_size = 500
-                ma_short_size = 50
+                ma_long_size = 1000
+                ma_short_size = 300
 
                 # Moving average long
                 ma_long = new MA(ma_long_size)
@@ -102,7 +102,7 @@ check_moving_average = ()->
                 console.log "Moving average for last #{ma_short_size} = #{ma_short_value}"
 
                 # Check if we should and can buy
-                least_difference = 4
+                least_difference = 0
 
                 if (ma_short_value + least_difference < ma_long_value) and invested
                     console.log "Going down let's sell"
