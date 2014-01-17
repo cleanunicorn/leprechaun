@@ -48,14 +48,18 @@
 
   sell = function() {
     return get_market_price(function(error, prices) {
-      console.log("TRANSACTION Selling at " + prices.market_sell);
+      var timestamp;
+      timestamp = new Date();
+      console.log("" + (timestamp.toUTCString()) + " TRANSACTION Selling at " + prices.market_sell);
       return invested = false;
     });
   };
 
   buy = function() {
     return get_market_price(function(error, prices) {
-      console.log("TRANSACTION Buying at " + prices.market_buy);
+      var timestamp;
+      timestamp = new Date();
+      console.log("" + (timestamp.toUTCString()) + " TRANSACTION Buying at " + prices.market_buy);
       return invested = true;
     });
   };

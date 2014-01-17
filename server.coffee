@@ -53,14 +53,16 @@ get_market_price = (callback)->
 sell = ()->
     get_market_price \
         (error, prices)->
-            console.log "TRANSACTION Selling at #{prices.market_sell}"
+            timestamp = new Date()
+            console.log "#{timestamp.toUTCString()} TRANSACTION Selling at #{prices.market_sell}"
             invested = false
 
 # Sell
 buy = ()->
     get_market_price \
         (error, prices)->
-            console.log "TRANSACTION Buying at #{prices.market_buy}"
+            timestamp = new Date()
+            console.log "#{timestamp.toUTCString()} TRANSACTION Buying at #{prices.market_buy}"
             invested = true
 
 
