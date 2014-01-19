@@ -82,14 +82,19 @@ check_moving_average = ()->
                 console.log "Data set length #{data_set.length}"
 
                 # Moving average
-                ma_long_size = 1000
-                ma_short_size = 300
+                ma_long_size = parseInt data_set.length, 10
+                ma_short_size = parseInt data_set.length / 3, 10
 
                 # Moving average long
                 ma_long = new MA(ma_long_size)
                 for i in [data_set.length - ma_long_size..data_set.length - 1]
                     # console.log "#{data_set[i]}"
-                    ma_long.push i, parseInt(data_set[i][0], 10)
+
+                    value = data_set[i][0]
+                    quantity = data_set[i][1]
+
+                    pondered_value = value * quantity
+                    ma_long.push i, pondered_value
 
                 ma_long_value = ma_long.movingAverage()
                 console.log "Moving average for last #{ma_long_size} = #{ma_long_value}"
