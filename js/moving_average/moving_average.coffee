@@ -23,7 +23,10 @@ exports = module.exports = MovingAverage = (timespan)->
 
             # calculate moving average
             previousMa = ma
-            ma = (value + (previousTime) * previousMa) / time
+
+            k = 2 / (time + 1)
+
+            ma = (value * k + previousMa) * (1 - k)
 
             # calculate variance
             # v = v + (value - previousMa) * (value - ma)

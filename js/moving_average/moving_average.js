@@ -18,10 +18,11 @@
     previousTime = 0;
     ret = {};
     ret.push = function(time, value) {
-      var previousMa;
+      var k, previousMa;
       if (previousTime) {
         previousMa = ma;
-        ma = (value + previousTime * previousMa) / time;
+        k = 2 / (time + 1);
+        ma = (value * k + previousMa) * (1 - k);
       } else {
         ma = value;
       }

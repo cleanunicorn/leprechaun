@@ -16,3 +16,6 @@ node_modules
 
 kraken-config.js
 kraken-config.coffee
+
+mandrill-config.js
+mandrill-config.coffee
