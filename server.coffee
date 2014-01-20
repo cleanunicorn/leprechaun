@@ -176,7 +176,7 @@ check_moving_average = ()->
 
                     invested = false
                 else
-                    console.log "Difference is #{difference}"
+                    console.log "Difference is #{Math.abs(ma_short_value - ma_long_value)}"
                     console.log "Invested = #{invested}"
 
                 # Sleep for a while

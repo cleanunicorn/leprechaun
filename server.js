@@ -153,7 +153,7 @@
           buy(difference);
           invested = false;
         } else {
-          console.log("Difference is " + difference);
+          console.log("Difference is " + (Math.abs(ma_short_value - ma_long_value)));
           console.log("Invested = " + invested);
         }
         return setTimeout(check_moving_average, kraken_timeout);
