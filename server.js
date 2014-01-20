@@ -65,7 +65,7 @@
     });
   };
 
-  sell = function() {
+  sell = function(difference) {
     return get_market_price(function(error, prices) {
       var timestamp;
       timestamp = new Date();
@@ -74,6 +74,7 @@
       message['subject'] = "You should sell at " + prices.market_sell;
       message['text'] = '';
       message['html'] = '';
+      message['html'] += "Current difference is " + difference + " <br />";
       return mandrill_client.messages.send({
         'message': message
       }, function(result) {
@@ -82,7 +83,7 @@
     });
   };
 
-  buy = function() {
+  buy = function(difference) {
     return get_market_price(function(error, prices) {
       var timestamp;
       timestamp = new Date();
@@ -91,7 +92,7 @@
       message['subject'] = "You should buy at " + prices.market_sell;
       message['text'] = '';
       message['html'] = '';
-      message['html'] += "Current difference is ";
+      message['html'] += "Current difference is " + difference + " <br />";
       return mandrill_client.messages.send({
         'message': message
       }, function(result) {
@@ -105,7 +106,7 @@
     return kraken.api('Trades', {
       'pair': 'XXBTZEUR'
     }, function(error, data) {
-      var data_set, i, ma_long, ma_long_size, ma_long_value, ma_short, ma_short_size, ma_short_value, trade_data, _i, _j, _ref, _ref1, _ref2, _ref3;
+      var data_set, difference, i, ma_long, ma_long_size, ma_long_value, ma_short, ma_short_size, ma_short_value, trade_data, _i, _j, _ref, _ref1, _ref2, _ref3;
       if (error) {
         return console.log(error);
       } else {
@@ -143,14 +144,16 @@
         console.log("Moving average for last " + ma_short_size + " = " + ma_short_value);
         if ((ma_short_value < ma_long_value) && invested) {
           console.log("Going down let's sell");
-          sell(Math.abs(ma_short_value - ma_long_value));
+          difference = Math.abs(ma_short_value - ma_long_value);
+          sell(difference);
           invested = true;
         } else if ((ma_short_value > ma_long_value) && !invested) {
           console.log("Going up let's buy");
-          buy(Math.abs(ma_short_value - ma_long_value));
+          difference = Math.abs(ma_short_value - ma_long_value);
+          buy(difference);
           invested = false;
         } else {
-          console.log("Difference is " + (Math.abs(ma_short_value - ma_long_value)));
+          console.log("Difference is " + difference);
           console.log("Invested = " + invested);
         }
         return setTimeout(check_moving_average, kraken_timeout);

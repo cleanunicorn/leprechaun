@@ -64,7 +64,7 @@ get_market_price = (callback)->
                 callback(error, prices)
 
 # Sell
-sell = ()->
+sell = (difference)->
     get_market_price \
         (error, prices)->
             timestamp = new Date()
@@ -74,6 +74,7 @@ sell = ()->
             message['subject'] = "You should sell at #{prices.market_sell}"
             message['text'] = ''
             message['html'] = ''
+            message['html'] += "Current difference is #{difference} <br />"
             mandrill_client.messages.send \
                 'message' : message
                 , (result)->
@@ -81,7 +82,7 @@ sell = ()->
 
 
 # Sell
-buy = ()->
+buy = (difference)->
     get_market_price \
         (error, prices)->
             timestamp = new Date()
@@ -91,7 +92,7 @@ buy = ()->
             message['subject'] = "You should buy at #{prices.market_sell}"
             message['text'] = ''
             message['html'] = ''
-            message['html'] += "Current difference is #{}"
+            message['html'] += "Current difference is #{difference} <br />"
             mandrill_client.messages.send \
                 'message' : message
                 , (result)->
@@ -159,19 +160,23 @@ check_moving_average = ()->
                 if (ma_short_value < ma_long_value) and invested
                     console.log "Going down let's sell"
 
+                    difference = Math.abs(ma_short_value - ma_long_value)
+
                     # Sell all
-                    sell(Math.abs(ma_short_value - ma_long_value))
+                    sell(difference)
 
                     invested = true
                 else if (ma_short_value > ma_long_value) and not invested
                     console.log "Going up let's buy"
 
+                    difference = Math.abs(ma_short_value - ma_long_value)
+
                     # Buy as much as you can
-                    buy(Math.abs(ma_short_value - ma_long_value))
+                    buy(difference)
 
                     invested = false
                 else
-                    console.log "Difference is #{Math.abs(ma_short_value - ma_long_value)}"
+                    console.log "Difference is #{difference}"
                     console.log "Invested = #{invested}"
 
                 # Sleep for a while
