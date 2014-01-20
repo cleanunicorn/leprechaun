@@ -91,6 +91,7 @@
       message['subject'] = "You should buy at " + prices.market_sell;
       message['text'] = '';
       message['html'] = '';
+      message['html'] += "Current difference is ";
       return mandrill_client.messages.send({
         'message': message
       }, function(result) {
@@ -142,11 +143,11 @@
         console.log("Moving average for last " + ma_short_size + " = " + ma_short_value);
         if ((ma_short_value < ma_long_value) && invested) {
           console.log("Going down let's sell");
-          sell();
+          sell(Math.abs(ma_short_value - ma_long_value));
           invested = true;
         } else if ((ma_short_value > ma_long_value) && !invested) {
           console.log("Going up let's buy");
-          buy();
+          buy(Math.abs(ma_short_value - ma_long_value));
           invested = false;
         } else {
           console.log("Difference is " + (Math.abs(ma_short_value - ma_long_value)));

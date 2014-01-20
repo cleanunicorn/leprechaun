@@ -91,6 +91,7 @@ buy = ()->
             message['subject'] = "You should buy at #{prices.market_sell}"
             message['text'] = ''
             message['html'] = ''
+            message['html'] += "Current difference is #{}"
             mandrill_client.messages.send \
                 'message' : message
                 , (result)->
@@ -159,14 +160,14 @@ check_moving_average = ()->
                     console.log "Going down let's sell"
 
                     # Sell all
-                    sell()
+                    sell(Math.abs(ma_short_value - ma_long_value))
 
                     invested = true
                 else if (ma_short_value > ma_long_value) and not invested
                     console.log "Going up let's buy"
 
                     # Buy as much as you can
-                    buy()
+                    buy(Math.abs(ma_short_value - ma_long_value))
 
                     invested = false
                 else
