@@ -20,11 +20,8 @@ mandrill = require 'mandrill-api/mandrill'
 mandrill_config = require './mandrill-config'
 mandrill_client = new mandrill.Mandrill mandrill_config.api_key
 message =
-    'from_email': mandrill_config.send_to
-    'from_name': mandrill_config.send_to
-    'to': [
-        'email' : mandrill_config.send_to
-    ]
+    'from_email': mandrill_config.send_from
+    'to': mandrill_config.send_to
     'important': true
 
 invested = false
