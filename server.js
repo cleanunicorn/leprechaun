@@ -67,7 +67,7 @@
     });
   };
 
-  sell = function(difference) {
+  sell = function(difference, volume_long, volume_short) {
     return get_market_price(function(error, prices) {
       var timestamp;
       timestamp = new Date();
@@ -77,6 +77,8 @@
       message['text'] = '';
       message['html'] = '';
       message['html'] += "Current difference is " + difference + " <br />";
+      message['html'] += "Volume for long is " + volume_long + "<br />";
+      message['html'] += "Volume for short is " + volume_short + "<br />";
       return mandrill_client.messages.send({
         'message': message
       }, function(result) {
@@ -85,7 +87,7 @@
     });
   };
 
-  buy = function(difference) {
+  buy = function(difference, volume_long, volume_short) {
     return get_market_price(function(error, prices) {
       var timestamp;
       timestamp = new Date();
@@ -95,6 +97,8 @@
       message['text'] = '';
       message['html'] = '';
       message['html'] += "Current difference is " + difference + " <br />";
+      message['html'] += "Volume for long is " + volume_long + "<br />";
+      message['html'] += "Volume for short is " + volume_short + "<br />";
       return mandrill_client.messages.send({
         'message': message
       }, function(result) {
@@ -108,7 +112,7 @@
     return kraken.api('Trades', {
       'pair': 'XXBTZEUR'
     }, function(error, data) {
-      var data_set, difference, i, ma_long, ma_long_size, ma_long_value, ma_short, ma_short_size, ma_short_value, trade_data, _i, _j, _ref, _ref1, _ref2, _ref3;
+      var data_set, difference, i, ma_long, ma_long_size, ma_long_value, ma_short, ma_short_size, ma_short_value, trade_data, volume_long, volume_short, _i, _j, _ref, _ref1, _ref2, _ref3;
       if (error) {
         return console.log(error);
       } else {
@@ -116,6 +120,8 @@
         console.log("Data set length " + data_set.length);
         ma_long_size = parseInt(data_set.length, 10);
         ma_short_size = parseInt(data_set.length / 3, 10);
+        volume_long = 0;
+        volume_short = 0;
         ma_long = new MA(ma_long_size);
         for (i = _i = _ref = data_set.length - ma_long_size, _ref1 = data_set.length - 1; _ref <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = _ref <= _ref1 ? ++_i : --_i) {
           trade_data = {
@@ -126,6 +132,7 @@
             'market/limit': data_set[i][4],
             'miscellaneous': data_set[i][5]
           };
+          volume_long += trade_data['volume'];
           ma_long.push(i, trade_data['price']);
         }
         ma_long_value = ma_long.movingAverage();
@@ -140,6 +147,7 @@
             'market/limit': data_set[i][4],
             'miscellaneous': data_set[i][5]
           };
+          volume_short += trade_data['volume'];
           ma_short.push(i, trade_data['price']);
         }
         ma_short_value = ma_short.movingAverage();
@@ -147,12 +155,12 @@
         if ((ma_short_value + least_difference < ma_long_value) && invested) {
           console.log("Going down let's sell");
           difference = Math.abs(ma_short_value - ma_long_value);
-          sell(difference);
+          sell(difference, volume_long, volume_short);
           invested = true;
         } else if ((ma_short_value - least_difference > ma_long_value) && !invested) {
           console.log("Going up let's buy");
           difference = Math.abs(ma_short_value - ma_long_value);
-          buy(difference);
+          buy(difference, volume_long, volume_short);
           invested = false;
         } else {
           console.log("Difference is " + (Math.abs(ma_short_value - ma_long_value)));

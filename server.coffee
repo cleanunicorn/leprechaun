@@ -65,7 +65,7 @@ get_market_price = (callback)->
                 callback(error, prices)
 
 # Sell
-sell = (difference)->
+sell = (difference, volume_long, volume_short)->
     get_market_price \
         (error, prices)->
             timestamp = new Date()
@@ -76,14 +76,16 @@ sell = (difference)->
             message['text'] = ''
             message['html'] = ''
             message['html'] += "Current difference is #{difference} <br />"
+            message['html'] += "Volume for long is #{volume_long}<br />"
+            message['html'] += "Volume for short is #{volume_short}<br />"
             mandrill_client.messages.send \
                 'message' : message
                 , (result)->
                     console.log result
 
 
-# Sell
-buy = (difference)->
+# Buy
+buy = (difference, volume_long, volume_short)->
     get_market_price \
         (error, prices)->
             timestamp = new Date()
@@ -94,6 +96,8 @@ buy = (difference)->
             message['text'] = ''
             message['html'] = ''
             message['html'] += "Current difference is #{difference} <br />"
+            message['html'] += "Volume for long is #{volume_long}<br />"
+            message['html'] += "Volume for short is #{volume_short}<br />"
             mandrill_client.messages.send \
                 'message' : message
                 , (result)->
@@ -119,6 +123,10 @@ check_moving_average = ()->
                 ma_long_size = parseInt data_set.length, 10
                 ma_short_size = parseInt data_set.length / 3, 10
 
+                # Volumes
+                volume_long = 0
+                volume_short = 0
+
                 # Moving average long
                 ma_long = new MA(ma_long_size)
                 for i in [data_set.length - ma_long_size..data_set.length - 1]
@@ -130,6 +138,8 @@ check_moving_average = ()->
                         'buy/sell'      : data_set[i][3]
                         'market/limit'  : data_set[i][4]
                         'miscellaneous' : data_set[i][5]
+
+                    volume_long += trade_data['volume']
 
                     ma_long.push \
                         i
@@ -150,6 +160,8 @@ check_moving_average = ()->
                         'market/limit'  : data_set[i][4]
                         'miscellaneous' : data_set[i][5]
 
+                    volume_short += trade_data['volume']
+
                     ma_short.push \
                         i
                         , trade_data['price']
@@ -164,7 +176,7 @@ check_moving_average = ()->
                     difference = Math.abs(ma_short_value - ma_long_value)
 
                     # Sell all
-                    sell(difference)
+                    sell(difference, volume_long, volume_short)
 
                     invested = true
                 else if (ma_short_value - least_difference > ma_long_value) and not invested
@@ -173,7 +185,7 @@ check_moving_average = ()->
                     difference = Math.abs(ma_short_value - ma_long_value)
 
                     # Buy as much as you can
-                    buy(difference)
+                    buy(difference, volume_long, volume_short)
 
                     invested = false
                 else
