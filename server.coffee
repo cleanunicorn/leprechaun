@@ -10,6 +10,7 @@ kraken = new KrakenClient \
     kraken_api_key
     , kraken_api_secret
 
+least_difference = 2
 
 # Set up moving average
 MA = require './js/moving_average/moving_average'
@@ -157,7 +158,7 @@ check_moving_average = ()->
                 console.log "Moving average for last #{ma_short_size} = #{ma_short_value}"
 
                 # Check if we should and can buy
-                if (ma_short_value < ma_long_value) and invested
+                if (ma_short_value + least_difference < ma_long_value) and invested
                     console.log "Going down let's sell"
 
                     difference = Math.abs(ma_short_value - ma_long_value)
@@ -166,7 +167,7 @@ check_moving_average = ()->
                     sell(difference)
 
                     invested = true
-                else if (ma_short_value > ma_long_value) and not invested
+                else if (ma_short_value - least_difference > ma_long_value) and not invested
                     console.log "Going up let's buy"
 
                     difference = Math.abs(ma_short_value - ma_long_value)
