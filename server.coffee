@@ -137,8 +137,8 @@ check_moving_average = ()->
 				console.log "Data set length #{data_set.length}"
 
 				# Moving average
-				ma_long_size = parseInt data_set.length, 10
-				ma_short_size = parseInt data_set.length / 3, 10
+				ma_long_size = parseInt data_set.length / 2, 10
+				ma_short_size = parseInt data_set.length / 5, 10
 
 				# Volumes
 				volume_long = 0
@@ -186,7 +186,7 @@ check_moving_average = ()->
 				ma_short_value = ma_short.movingAverage()
 				console.log "Moving average for last #{ma_short_size} = #{ma_short_value}"
 
-				# Check if we should and can buy
+				# Check if we should and can sell
 				if (ma_short_value + least_difference < ma_long_value) and invested
 					console.log "Going down let's sell"
 
@@ -196,6 +196,7 @@ check_moving_average = ()->
 					sell(difference, volume_long, volume_short)
 
 					invested = true
+				# Check if we should and can buy
 				else if (ma_short_value - least_difference > ma_long_value) and not invested
 					console.log "Going up let's buy"
 
