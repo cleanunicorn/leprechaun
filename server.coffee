@@ -30,6 +30,9 @@ message =
 # If we already bought the bitcoin
 invested = false
 
+# If we warned about the movement
+price_warn = false
+
 # Get balance
 kraken.api \
 	'Balance'
@@ -70,17 +73,19 @@ sell = (difference, volume_long, volume_short)->
 	get_market_price \
 		(error, prices)->
 			# Check if I the selling price is higher (with fee)
-			if prices.market_sell <= (buy_price + (buy_price * fee_percent / 100))
+			if prices.market_sell <= (buy_price + (buy_price * fee_percent / 100)) and price_warn is false
 				message['subject'] = "Trying to sell but the selling price is too low"
 				message['text'] = ''
 				message['html'] = "Selling price #{prices.market_sell}<br />"
 				message['html'] += "Bought at #{buy_price}, with fee must be at least #{buy_price * fee_percent / 100}<br />"
 				mandrill_client.messages.send \
-				'message' : message
-				, (result)->
-					console.log result
-
+					'message' : message
+					, (result)->
+						console.log result
+				price_warn = true
 				return false
+
+			price_warn = false
 
 			# If we can sell, we do it
 			timestamp = new Date()
